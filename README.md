@@ -4,6 +4,8 @@ A personal financial tracker that runs entirely in the browser. No account, no
 server, no analytics — your data lives in this device's IndexedDB and leaves it
 only when you export it yourself.
 
+**Live: https://phillipsumolang.github.io/dompet-digital/**
+
 Built with Vite + React + TypeScript, in Rupiah.
 
 ## Running it
@@ -27,7 +29,7 @@ app rather than to a 404 page. Config for the three common hosts is committed:
 
 | Host | How |
 |---|---|
-| **GitHub Pages** | `.github/workflows/deploy.yml` builds on every push to `main`. `VITE_BASE` sets the sub-path and `404.html` (a copy of `index.html`) makes deep links boot the app. |
+| **GitHub Pages** | `.github/workflows/deploy.yml` builds on every push to `main`. `VITE_BASE` sets the sub-path and `404.html` (a copy of `index.html`) makes deep links boot the app. Pages has no rewrites, so a deep link is answered with HTTP 404 and the app boots from that response — correct for a visitor, untidy for a crawler. A host with real rewrites avoids it. |
 | **Vercel** | `vercel.json` — rewrite everything to `/index.html` |
 | **Netlify** | `netlify.toml` — the same rule as a 200 redirect |
 
