@@ -22,8 +22,16 @@ npm run dev
 | `npm run lint` | oxlint |
 
 Deploying is copying `dist/` to any static host. There is no backend to run.
-The app uses client-side routing, so the host must rewrite unknown paths to
-`index.html` (on Vercel/Netlify this is a single SPA-fallback rule).
+The app uses client-side routing, so the host must send unknown paths to the
+app rather than to a 404 page. Config for the three common hosts is committed:
+
+| Host | How |
+|---|---|
+| **GitHub Pages** | `.github/workflows/deploy.yml` builds on every push to `main`. `VITE_BASE` sets the sub-path and `404.html` (a copy of `index.html`) makes deep links boot the app. |
+| **Vercel** | `vercel.json` — rewrite everything to `/index.html` |
+| **Netlify** | `netlify.toml` — the same rule as a 200 redirect |
+
+Building for a sub-path locally: `VITE_BASE=/dompet-digital/ npm run build:pages`.
 
 ## The pages
 
