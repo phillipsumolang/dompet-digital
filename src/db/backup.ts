@@ -75,6 +75,12 @@ export async function restoreBackup(text: string): Promise<RestoreCounts> {
   }
 
   const { data, schemaVersion } = result.data
+
+  // Backups from before syncing carry no timestamps. Dating them from the
+  // export gives every row one without inventing an order that never existed.
+  const fallback = result.data.exportedAt || new Date().toISOString()
+  const stamped = <T extends { updatedAt?: string; createdAt?: string }>(rows: T[]) =>
+    rows.map((row) => ({ ...row, updatedAt: row.updatedAt ?? row.createdAt ?? fallback }))
   if (schemaVersion > SCHEMA_VERSION) {
     throw new RestoreError(
       `This backup was made by a newer version of Dompet (v${schemaVersion}). Update the app first.`,
@@ -83,12 +89,12 @@ export async function restoreBackup(text: string): Promise<RestoreCounts> {
 
   await db.transaction('rw', TABLE_NAMES.map((name) => db[name]), async () => {
     await Promise.all(TABLE_NAMES.map((name) => db[name].clear()))
-    await db.accounts.bulkAdd(data.accounts)
-    await db.categories.bulkAdd(data.categories)
-    await db.subcategories.bulkAdd(data.subcategories)
-    await db.transactions.bulkAdd(data.transactions)
-    await db.budgets.bulkAdd(data.budgets)
-    await db.splitBills.bulkAdd(data.splitBills)
+    await db.accounts.bulkAdd(stamped(data.accounts))
+    await db.categories.bulkAdd(stamped(data.categories))
+    await db.subcategories.bulkAdd(stamped(data.subcategories))
+    await db.transactions.bulkAdd(stamped(data.transactions))
+    await db.budgets.bulkAdd(stamped(data.budgets))
+    await db.splitBills.bulkAdd(stamped(data.splitBills))
     await db.settings.bulkAdd(data.settings)
   })
 

@@ -79,6 +79,12 @@ get their own tiles and stay out of "Expenses". Transfers are excluded from
 every total; they only move balance between accounts. Set a transaction's
 *To account* and the receiving account's balance grows.
 
+**Deletes are tombstones.** Removing anything sets `deletedAt` rather than
+dropping the row, and every read filters those out. A row that simply vanished
+could not tell another device it was deleted, so a sync would helpfully bring it
+back. Every write also bumps `updatedAt`, which is what a merge compares. Old
+tombstones are swept on boot (`sweepTombstones` in `src/db/mutations.ts`).
+
 **Everything reads through `useLiveQuery`.** Dexie re-runs the queries that
 touched a changed table, so a transaction saved in a modal updates the dashboard
 behind it. There is no global store for domain data and nothing to invalidate.

@@ -6,7 +6,25 @@
  * Floats are never used for money -- they drift, and the drift is invisible.
  */
 
-export const SCHEMA_VERSION = 1
+export const SCHEMA_VERSION = 2
+
+/**
+ * What every record needs to survive syncing.
+ *
+ * `updatedAt` is the basis for last-write-wins, so every write must bump it --
+ * a stale timestamp silently loses the edit on the next merge.
+ *
+ * `deletedAt` exists because a row that simply vanishes cannot tell another
+ * device it was deleted; the other device would helpfully sync it back. Deletes
+ * are therefore tombstones, swept up later once they have been pushed.
+ */
+export interface Syncable {
+  updatedAt: string
+  deletedAt?: string
+}
+
+/** Narrow view of a synced row, for helpers that do not care about the rest. */
+export type SyncableRow = { id: string } & Syncable
 
 export type AccountType =
   | 'salary'
@@ -27,7 +45,7 @@ export type TransactionType = 'income' | 'expense' | 'transfer'
 
 export type ThemeMode = 'light' | 'dark'
 
-export interface Account {
+export interface Account extends Syncable {
   id: string
   name: string
   type: AccountType
@@ -40,7 +58,7 @@ export interface Account {
   createdAt: string
 }
 
-export interface Category {
+export interface Category extends Syncable {
   id: string
   name: string
   kind: CategoryKind
@@ -49,7 +67,7 @@ export interface Category {
   order: number
 }
 
-export interface Subcategory {
+export interface Subcategory extends Syncable {
   id: string
   categoryId: string
   name: string
@@ -57,7 +75,7 @@ export interface Subcategory {
   order: number
 }
 
-export interface Transaction {
+export interface Transaction extends Syncable {
   id: string
   /** YYYY-MM-DD */
   date: string
@@ -76,10 +94,9 @@ export interface Transaction {
   subcategoryId?: string
   note: string
   createdAt: string
-  updatedAt: string
 }
 
-export interface Budget {
+export interface Budget extends Syncable {
   /** `${month}:${categoryId}` -- one budget per category per month. */
   id: string
   month: string
@@ -103,7 +120,7 @@ export interface SplitItem {
   personIds: string[]
 }
 
-export interface SplitBill {
+export interface SplitBill extends Syncable {
   id: string
   title: string
   date: string

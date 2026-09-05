@@ -3,10 +3,10 @@ import type { Budget, Category, Transaction } from '../db/schema'
 import { buildBudgetRows, summarizeBudget } from './budget'
 
 const categories: Category[] = [
-  { id: 'inc', name: 'Income', kind: 'income', isBuiltIn: true, color: 's1', order: 0 },
-  { id: 'bil', name: 'Bills', kind: 'bills', isBuiltIn: true, color: 's2', order: 1 },
-  { id: 'exp', name: 'Expenses', kind: 'expense', isBuiltIn: true, color: 's3', order: 2 },
-  { id: 'trf', name: 'Transfer', kind: 'transfer', isBuiltIn: true, color: 's6', order: 5 },
+  { id: 'inc', name: 'Income', kind: 'income', isBuiltIn: true, color: 's1', order: 0, updatedAt: '2026-01-01T00:00:00.000Z' },
+  { id: 'bil', name: 'Bills', kind: 'bills', isBuiltIn: true, color: 's2', order: 1, updatedAt: '2026-01-01T00:00:00.000Z' },
+  { id: 'exp', name: 'Expenses', kind: 'expense', isBuiltIn: true, color: 's3', order: 2, updatedAt: '2026-01-01T00:00:00.000Z' },
+  { id: 'trf', name: 'Transfer', kind: 'transfer', isBuiltIn: true, color: 's6', order: 5, updatedAt: '2026-01-01T00:00:00.000Z' },
 ]
 
 let seq = 0
@@ -27,7 +27,7 @@ function tx(categoryId: string, amount: number, month = '2026-09'): Transaction 
 }
 
 function budget(categoryId: string, amount: number, rollover = false, month = '2026-09'): Budget {
-  return { id: `${month}:${categoryId}`, month, categoryId, amount, rollover }
+  return { id: `${month}:${categoryId}`, month, categoryId, amount, rollover, updatedAt: '2026-01-01T00:00:00.000Z' }
 }
 
 describe('buildBudgetRows', () => {

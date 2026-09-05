@@ -7,9 +7,20 @@
  */
 import { z } from 'zod'
 
+/**
+ * Sync fields are optional here on purpose: backups written before syncing
+ * existed have neither, and they must still restore. `restoreBackup` fills
+ * them in rather than rejecting the file.
+ */
+const syncFields = {
+  updatedAt: z.string().optional(),
+  deletedAt: z.string().optional(),
+}
+
 const themeSchema = z.enum(['light', 'dark'])
 
 const accountSchema = z.object({
+  ...syncFields,
   id: z.string(),
   name: z.string(),
   type: z.enum(['salary', 'spending', 'savings', 'insurance_emoney', 'investment']),
@@ -23,6 +34,7 @@ const accountSchema = z.object({
 })
 
 const categorySchema = z.object({
+  ...syncFields,
   id: z.string(),
   name: z.string(),
   kind: z.enum(['income', 'bills', 'expense', 'savings', 'investment', 'transfer']),
@@ -32,6 +44,7 @@ const categorySchema = z.object({
 })
 
 const subcategorySchema = z.object({
+  ...syncFields,
   id: z.string(),
   categoryId: z.string(),
   name: z.string(),
@@ -40,6 +53,7 @@ const subcategorySchema = z.object({
 })
 
 const transactionSchema = z.object({
+  ...syncFields,
   id: z.string(),
   date: z.string(),
   month: z.string(),
@@ -55,6 +69,7 @@ const transactionSchema = z.object({
 })
 
 const budgetSchema = z.object({
+  ...syncFields,
   id: z.string(),
   month: z.string(),
   categoryId: z.string(),
@@ -63,6 +78,7 @@ const budgetSchema = z.object({
 })
 
 const splitBillSchema = z.object({
+  ...syncFields,
   id: z.string(),
   title: z.string(),
   date: z.string(),

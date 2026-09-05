@@ -87,6 +87,7 @@ export const DEFAULT_SETTINGS: Settings = {
 function buildCategories(): { categories: Category[]; subcategories: Subcategory[] } {
   const categories: Category[] = []
   const subcategories: Subcategory[] = []
+  const seededAt = nowISO()
 
   BUILTIN_CATEGORIES.forEach((seed, order) => {
     categories.push({
@@ -96,6 +97,7 @@ function buildCategories(): { categories: Category[]; subcategories: Subcategory
       isBuiltIn: true,
       color: seed.color,
       order,
+      updatedAt: seededAt,
     })
     seed.subs.forEach((name, subOrder) => {
       subcategories.push({
@@ -104,6 +106,7 @@ function buildCategories(): { categories: Category[]; subcategories: Subcategory
         name,
         isBuiltIn: true,
         order: subOrder,
+        updatedAt: seededAt,
       })
     })
   })
@@ -139,6 +142,7 @@ export async function seedIfEmpty(): Promise<void> {
             archived: 0 as const,
             order,
             createdAt,
+            updatedAt: createdAt,
           })),
         )
       }

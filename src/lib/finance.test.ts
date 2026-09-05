@@ -12,12 +12,12 @@ import {
 } from './finance'
 
 const cats: Category[] = [
-  { id: 'inc', name: 'Income', kind: 'income', isBuiltIn: true, color: 's1', order: 0 },
-  { id: 'bil', name: 'Bills', kind: 'bills', isBuiltIn: true, color: 's2', order: 1 },
-  { id: 'exp', name: 'Expenses', kind: 'expense', isBuiltIn: true, color: 's3', order: 2 },
-  { id: 'sav', name: 'Savings', kind: 'savings', isBuiltIn: true, color: 's4', order: 3 },
-  { id: 'inv', name: 'Investments', kind: 'investment', isBuiltIn: true, color: 's5', order: 4 },
-  { id: 'trf', name: 'Transfer', kind: 'transfer', isBuiltIn: true, color: 's6', order: 5 },
+  { id: 'inc', name: 'Income', kind: 'income', isBuiltIn: true, color: 's1', order: 0, updatedAt: '2026-01-01T00:00:00.000Z' },
+  { id: 'bil', name: 'Bills', kind: 'bills', isBuiltIn: true, color: 's2', order: 1, updatedAt: '2026-01-01T00:00:00.000Z' },
+  { id: 'exp', name: 'Expenses', kind: 'expense', isBuiltIn: true, color: 's3', order: 2, updatedAt: '2026-01-01T00:00:00.000Z' },
+  { id: 'sav', name: 'Savings', kind: 'savings', isBuiltIn: true, color: 's4', order: 3, updatedAt: '2026-01-01T00:00:00.000Z' },
+  { id: 'inv', name: 'Investments', kind: 'investment', isBuiltIn: true, color: 's5', order: 4, updatedAt: '2026-01-01T00:00:00.000Z' },
+  { id: 'trf', name: 'Transfer', kind: 'transfer', isBuiltIn: true, color: 's6', order: 5, updatedAt: '2026-01-01T00:00:00.000Z' },
 ]
 const map = categoryMap(cats)
 
@@ -89,9 +89,9 @@ describe('computeTotals', () => {
 
 describe('accountBalances', () => {
   const accounts: Account[] = [
-    { id: 'a1', name: 'Bank', type: 'salary', initialBalance: 1_000_000, color: 's1', archived: 0, order: 0, createdAt: '' },
-    { id: 'a2', name: 'Savings', type: 'savings', initialBalance: 0, color: 's4', archived: 0, order: 1, createdAt: '' },
-    { id: 'a3', name: 'Broker', type: 'investment', initialBalance: 0, color: 's5', archived: 0, order: 2, createdAt: '' },
+    { id: 'a1', name: 'Bank', type: 'salary', initialBalance: 1_000_000, color: 's1', archived: 0, order: 0, createdAt: '', updatedAt: '2026-01-01T00:00:00.000Z' },
+    { id: 'a2', name: 'Savings', type: 'savings', initialBalance: 0, color: 's4', archived: 0, order: 1, createdAt: '', updatedAt: '2026-01-01T00:00:00.000Z' },
+    { id: 'a3', name: 'Broker', type: 'investment', initialBalance: 0, color: 's5', archived: 0, order: 2, createdAt: '', updatedAt: '2026-01-01T00:00:00.000Z' },
   ]
 
   it('is initial + inflow - outflow', () => {
@@ -168,8 +168,8 @@ describe('monthlyTrend', () => {
 
 describe('accountUsage', () => {
   const accounts: Account[] = [
-    { id: 'a1', name: 'Bank', type: 'salary', initialBalance: 0, color: 's1', archived: 0, order: 0, createdAt: '' },
-    { id: 'a2', name: 'Savings', type: 'savings', initialBalance: 0, color: 's4', archived: 0, order: 1, createdAt: '' },
+    { id: 'a1', name: 'Bank', type: 'salary', initialBalance: 0, color: 's1', archived: 0, order: 0, createdAt: '', updatedAt: '2026-01-01T00:00:00.000Z' },
+    { id: 'a2', name: 'Savings', type: 'savings', initialBalance: 0, color: 's4', archived: 0, order: 1, createdAt: '', updatedAt: '2026-01-01T00:00:00.000Z' },
   ]
 
   it('counts both ends of a transfer', () => {

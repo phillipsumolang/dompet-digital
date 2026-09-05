@@ -3,19 +3,19 @@ import type { Account, Budget, Category, Subcategory, Transaction } from '../db/
 import { buildWorkbook, workbookFilename, type Row } from './excel'
 
 const categories: Category[] = [
-  { id: 'inc', name: 'Income', kind: 'income', isBuiltIn: true, color: 's1', order: 0 },
-  { id: 'bil', name: 'Bills', kind: 'bills', isBuiltIn: true, color: 's2', order: 1 },
-  { id: 'exp', name: 'Expenses', kind: 'expense', isBuiltIn: true, color: 's3', order: 2 },
-  { id: 'trf', name: 'Transfer', kind: 'transfer', isBuiltIn: true, color: 's6', order: 5 },
+  { id: 'inc', name: 'Income', kind: 'income', isBuiltIn: true, color: 's1', order: 0, updatedAt: '2026-01-01T00:00:00.000Z' },
+  { id: 'bil', name: 'Bills', kind: 'bills', isBuiltIn: true, color: 's2', order: 1, updatedAt: '2026-01-01T00:00:00.000Z' },
+  { id: 'exp', name: 'Expenses', kind: 'expense', isBuiltIn: true, color: 's3', order: 2, updatedAt: '2026-01-01T00:00:00.000Z' },
+  { id: 'trf', name: 'Transfer', kind: 'transfer', isBuiltIn: true, color: 's6', order: 5, updatedAt: '2026-01-01T00:00:00.000Z' },
 ]
 
 const subcategories: Subcategory[] = [
-  { id: 'rent', categoryId: 'bil', name: 'Rent', isBuiltIn: true, order: 0 },
+  { id: 'rent', categoryId: 'bil', name: 'Rent', isBuiltIn: true, order: 0, updatedAt: '2026-01-01T00:00:00.000Z' },
 ]
 
 const accounts: Account[] = [
-  { id: 'a1', name: 'Bank', type: 'salary', initialBalance: 1_000_000, color: 's1', archived: 0, order: 0, createdAt: '' },
-  { id: 'a2', name: 'Cash', type: 'spending', initialBalance: 0, color: 's3', archived: 0, order: 1, createdAt: '' },
+  { id: 'a1', name: 'Bank', type: 'salary', initialBalance: 1_000_000, color: 's1', archived: 0, order: 0, createdAt: '', updatedAt: '2026-01-01T00:00:00.000Z' },
+  { id: 'a2', name: 'Cash', type: 'spending', initialBalance: 0, color: 's3', archived: 0, order: 1, createdAt: '', updatedAt: '2026-01-01T00:00:00.000Z' },
 ]
 
 let seq = 0
@@ -43,7 +43,7 @@ const transactions: Transaction[] = [
 ]
 
 const budgets: Budget[] = [
-  { id: '2026-09:bil', month: '2026-09', categoryId: 'bil', amount: 3_500_000, rollover: false },
+  { id: '2026-09:bil', month: '2026-09', categoryId: 'bil', amount: 3_500_000, rollover: false, updatedAt: '2026-01-01T00:00:00.000Z' },
 ]
 
 const input = {
