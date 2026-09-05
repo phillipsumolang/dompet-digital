@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Client-side routing: every unknown path is the app, not a missing file.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
