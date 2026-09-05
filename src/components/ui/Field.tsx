@@ -4,8 +4,8 @@ import { cn } from '../../lib/cn'
 import { formatNumber, parseAmount } from '../../lib/money'
 
 const CONTROL =
-  'w-full rounded-lg border border-line bg-surface px-3 text-sm text-ink placeholder:text-muted ' +
-  'transition-colors focus:border-brand disabled:opacity-50'
+  'w-full min-w-0 rounded-lg border border-line bg-surface px-3 text-sm text-ink ' +
+  'placeholder:text-muted transition-colors focus:border-brand disabled:opacity-50'
 
 export function Field({
   label,

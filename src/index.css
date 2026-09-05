@@ -91,6 +91,20 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /*
+   * iOS renders date and time inputs with UIKit rather than from the declared
+   * width, and the native control can end up wider than its container, spilling
+   * out of a narrow card or dialog. Desktop WebKit does not reproduce it, so
+   * these are a guard rather than a measured fix: where the field already fits,
+   * neither line changes anything.
+   */
+  input[type='date'],
+  input[type='time'],
+  input[type='month'] {
+    min-width: 0;
+    max-width: 100%;
+  }
+
   :focus-visible {
     outline: 2px solid var(--app-brand);
     outline-offset: 2px;
