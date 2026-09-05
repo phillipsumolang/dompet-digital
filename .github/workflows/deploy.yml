@@ -69,8 +69,17 @@ jobs:
         with:
           path: dist
 
+  # RLS is the only thing standing between a stranger and this data, so the
+  # policies are attacked on a throwaway Postgres before anything ships.
+  database:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Verify row-level security
+        run: supabase/verify.sh
+
   deploy:
-    needs: build
+    needs: [build, database]
     runs-on: ubuntu-latest
     environment:
       name: github-pages
