@@ -21,7 +21,10 @@ npm run dev
 | `npm run build` | Type-check and build to `dist/` (static files — host them anywhere) |
 | `npm run preview` | Serve the production build |
 | `npm test` | Vitest over the money, date, aggregation, budget, split and export logic |
+| `npm run test:mobile` | Playwright: the app in **WebKit at iPhone size**, against the production build |
 | `npm run lint` | oxlint |
+
+`test:mobile` needs the browser once: `npx playwright install webkit`.
 
 Deploying is copying `dist/` to any static host. There is no backend to run.
 The app uses client-side routing, so the host must send unknown paths to the
@@ -88,6 +91,27 @@ identities plus "Other" rather than inventing an eighth hue.
 **The heavy dependencies are lazy.** Recharts, the Excel writer and the Zod
 restore schema each load only when something needs them, keeping the initial
 bundle to what the dashboard actually uses.
+
+## What the mobile suite does and does not cover
+
+Two layout bugs reached production because they rendered correctly in Chromium
+and wrongly on a phone: a modal body that collapsed to a single row, and a date
+input that spilled out of its container. `e2e/mobile-layout.spec.ts` exists so
+that class of bug is caught before shipping. It checks every route for content
+spilling sideways, and the transaction modal for a collapsed body, controls
+wider than the dialog, and buttons pushed off screen when the viewport shrinks
+to what an open keyboard leaves.
+
+**It is not iOS.** The WebKit that Playwright ships is the desktop build, and it
+does not render iOS's native form controls or reproduce that dialog-sizing
+behaviour — reintroducing the original `flex-1` bug does not make the rendered
+assertions fail. So the two causes are pinned as *rules* instead: the modal body
+must not use `flex-grow`, and date inputs must carry a `max-width`. Both were
+confirmed to fail when the bug is put back.
+
+The practical consequence: this suite catches gross breakage, JS errors and
+sideways overflow in a second engine, and it stops these two specific
+regressions. It is not a substitute for opening the site on a real phone.
 
 ## Backing up
 

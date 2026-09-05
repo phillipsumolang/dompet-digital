@@ -35,6 +35,28 @@ jobs:
       - name: Test
         run: npm test
 
+      # The layout bugs that reached production both rendered correctly in
+      # Chromium, so this runs the app in WebKit at phone size before we ship.
+      - name: Cache the WebKit build
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install WebKit
+        run: npx playwright install --with-deps webkit
+
+      - name: Mobile layout smoke test
+        run: npm run test:mobile
+
+      - name: Keep the report when the smoke test fails
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
       - name: Build
         run: npm run build:pages
         env:
