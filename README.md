@@ -106,8 +106,9 @@ to what an open keyboard leaves.
 does not render iOS's native form controls or reproduce that dialog-sizing
 behaviour — reintroducing the original `flex-1` bug does not make the rendered
 assertions fail. So the two causes are pinned as *rules* instead: the modal body
-must not use `flex-grow`, and date inputs must carry a `max-width`. Both were
-confirmed to fail when the bug is put back.
+must not use `flex-grow`, and date inputs must turn off the native appearance
+and carry a `max-width`. The `flex-grow` rule was confirmed to fail when the
+bug is put back.
 
 The practical consequence: this suite catches gross breakage, JS errors and
 sideways overflow in a second engine, and it stops these two specific

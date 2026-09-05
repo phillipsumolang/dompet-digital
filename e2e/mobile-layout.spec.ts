@@ -122,9 +122,11 @@ test.describe('transaction modal', () => {
         viewportHeight: window.innerHeight,
         fieldCount: fields.length,
         spilling: fields.filter((f) => f.overflowsDialog),
-        dateFieldMaxWidth: (() => {
+        dateField: (() => {
           const date = body.querySelector('input[type="date"]')
-          return date ? getComputedStyle(date).maxWidth : 'no date field'
+          if (!date) return null
+          const cs = getComputedStyle(date)
+          return { maxWidth: cs.maxWidth, appearance: cs.appearance }
         })(),
       }
     })
@@ -143,11 +145,22 @@ test.describe('transaction modal', () => {
       'Modal body must not use flex-grow; it collapses the dialog on iOS',
     ).toBe('0')
 
-    // Same reasoning: iOS sizes date inputs from the native control rather
-    // than the declared width, and only a cap keeps them inside the dialog.
+    // Same reasoning for the date field. iOS lays it out as a native control
+    // sized by its own content, and it spills past a narrow container; a cap
+    // alone does not stop it, because the native shadow content is drawn
+    // outside the capped box. Turning the native appearance off is what puts
+    // the field back on the normal box model.
     expect(
-      metrics.dateFieldMaxWidth,
-      'Date input needs a max-width or it can spill out of the dialog on iOS',
+      metrics.dateField,
+      'Modal should contain a date field',
+    ).not.toBeNull()
+    expect(
+      metrics.dateField?.appearance,
+      'Date input must not use the native appearance; it overflows on iOS',
+    ).toBe('none')
+    expect(
+      metrics.dateField?.maxWidth,
+      'Date input needs a max-width as well, capping the box itself',
     ).not.toBe('none')
 
     // The collapse bug left the body at roughly one row while the header and

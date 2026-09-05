@@ -92,17 +92,33 @@
   }
 
   /*
-   * iOS renders date and time inputs with UIKit rather than from the declared
-   * width, and the native control can end up wider than its container, spilling
-   * out of a narrow card or dialog. Desktop WebKit does not reproduce it, so
-   * these are a guard rather than a measured fix: where the field already fits,
-   * neither line changes anything.
+   * iOS lays date and time inputs out as native controls sized by their own
+   * content, so they spill past a narrow container and `max-width` alone does
+   * not stop it -- the native shadow content is drawn outside the capped box.
+   * Turning the native appearance off puts the field back on the normal box
+   * model, where the declared width actually applies.
+   *
+   * Tailwind's preflight already gives `::-webkit-date-and-time-value` a
+   * `min-height: 1lh` and inherited alignment, which is what keeps the value
+   * legible once the native styling is gone.
+   *
+   * Neither desktop WebKit nor Chromium reproduces the overflow, so this is
+   * reasoned from the platform rather than measured here; both were checked
+   * for regressions.
    */
   input[type='date'],
   input[type='time'],
   input[type='month'] {
+    -webkit-appearance: none;
+    appearance: none;
     min-width: 0;
     max-width: 100%;
+  }
+
+  /* The value is the field's only content; keep it on the text baseline the
+     other inputs use rather than centred by the native control. */
+  ::-webkit-date-and-time-value {
+    text-align: left;
   }
 
   :focus-visible {
