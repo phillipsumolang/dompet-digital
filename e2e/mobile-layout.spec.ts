@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import { dismissWelcome } from './helpers'
 
 /**
  * Guards the two ways this app has broken on a phone but not on a desktop:
@@ -17,18 +18,6 @@ const ROUTES = [
   '/split-bill',
 ] as const
 
-/**
- * First run shows a welcome dialog; it is not what these tests are about.
- *
- * Every test gets a fresh browser context, so it always appears -- but it is
- * rendered from a Dexie live query, so it can arrive a beat after load. Waiting
- * for it unconditionally is what makes that deterministic; probing with
- * `count()` races it and leaves the dialog swallowing the next click.
- */
-async function dismissWelcome(page: Page): Promise<void> {
-  await page.getByRole('button', { name: 'Skip' }).click()
-  await expect(page.locator('dialog[open]')).toHaveCount(0)
-}
 
 interface Overflow {
   tag: string

@@ -12,6 +12,15 @@ import { expect, test } from '@playwright/test'
 /** Dexie stores its version number multiplied by ten. */
 const DEXIE_V1 = 10
 
+/**
+ * Dated relative to today, not to the day this was written. The dashboard
+ * opens on the current month, so a hard-coded date makes the final assertion
+ * quietly stop checking anything the moment the month turns over.
+ */
+const today = new Date()
+const DAY = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-01`
+const MONTH = DAY.slice(0, 7)
+
 const seedV1 = `
   await new Promise((resolve, reject) => {
     indexedDB.deleteDatabase('dompet-digital').onsuccess = resolve
@@ -53,10 +62,10 @@ const seedV1 = `
       tx.objectStore('categories').put({ id: 'cat-income', name: 'Income', kind: 'income', isBuiltIn: true, color: 's1', order: 0 })
       tx.objectStore('categories').put({ id: 'cat-expenses', name: 'Expenses', kind: 'expense', isBuiltIn: true, color: 's3', order: 2 })
       tx.objectStore('subcategories').put({ id: 'sub-gro', categoryId: 'cat-expenses', name: 'Groceries', isBuiltIn: true, order: 0 })
-      tx.objectStore('transactions').put({ id: 't1', date: '2026-09-01', month: '2026-09', type: 'income', amount: 18500000, accountId: 'a1', categoryId: 'cat-income', note: 'Salary', createdAt: '2026-09-01T00:00:00.000Z', updatedAt: '2026-09-01T00:00:00.000Z' })
-      tx.objectStore('transactions').put({ id: 't2', date: '2026-09-03', month: '2026-09', type: 'expense', amount: 250000, accountId: 'a2', categoryId: 'cat-expenses', subcategoryId: 'sub-gro', note: 'Belanja', createdAt: '2026-09-03T00:00:00.000Z', updatedAt: '2026-09-03T00:00:00.000Z' })
-      tx.objectStore('budgets').put({ id: '2026-09:cat-expenses', month: '2026-09', categoryId: 'cat-expenses', amount: 3000000, rollover: false })
-      tx.objectStore('splitBills').put({ id: 'b1', title: 'Dinner', date: '2026-09-02', people: [], items: [], taxPercent: 11, servicePercent: 0, discount: 0, payerId: 'p1', createdAt: '2026-09-02T00:00:00.000Z' })
+      tx.objectStore('transactions').put({ id: 't1', date: '${DAY}', month: '${MONTH}', type: 'income', amount: 18500000, accountId: 'a1', categoryId: 'cat-income', note: 'Salary', createdAt: '2026-09-01T00:00:00.000Z', updatedAt: '2026-09-01T00:00:00.000Z' })
+      tx.objectStore('transactions').put({ id: 't2', date: '${DAY}', month: '${MONTH}', type: 'expense', amount: 250000, accountId: 'a2', categoryId: 'cat-expenses', subcategoryId: 'sub-gro', note: 'Belanja', createdAt: '2026-09-03T00:00:00.000Z', updatedAt: '2026-09-03T00:00:00.000Z' })
+      tx.objectStore('budgets').put({ id: '${MONTH}:cat-expenses', month: '${MONTH}', categoryId: 'cat-expenses', amount: 3000000, rollover: false })
+      tx.objectStore('splitBills').put({ id: 'b1', title: 'Dinner', date: '${DAY}', people: [], items: [], taxPercent: 11, servicePercent: 0, discount: 0, payerId: 'p1', createdAt: '2026-09-02T00:00:00.000Z' })
       tx.objectStore('settings').put({ id: 'app', userName: 'Philip', theme: 'light', onboarded: true, tourDone: false })
       tx.oncomplete = () => { db.close(); resolve() }
       tx.onerror = () => reject(tx.error)
@@ -119,6 +128,7 @@ test('upgrading a v1 database keeps every row and gives it a timestamp', async (
 
   expect(after.bankUpdatedAt).toBe('2026-06-01T00:00:00.000Z')
 
-  // And the migrated data is what the app actually shows.
+  // And the migrated data is what the app actually shows -- the point of the
+  // whole exercise, rather than rows sitting unreachable in a table.
   await expect(page.getByText('Rp 18.500.000')).toBeVisible()
 })

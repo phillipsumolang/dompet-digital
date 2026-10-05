@@ -120,6 +120,26 @@ The practical consequence: this suite catches gross breakage, JS errors and
 sideways overflow in a second engine, and it stops these two specific
 regressions. It is not a substitute for opening the site on a real phone.
 
+## When things go wrong
+
+Both failure paths used to lie about data that cannot be recovered, so both now
+say what happened.
+
+A **render crash** shows a screen offering a backup download, not a blank page.
+The data is almost certainly fine — it is React that fell over, not IndexedDB —
+and the obvious reaction to a blank page is to clear the site's data, which
+would destroy everything. The boundary is keyed by route, so one broken screen
+does not hold the others hostage.
+
+A **browser refusing to store anything** (private browsing, blocked site data,
+no quota left) shows a banner that cannot be dismissed. Without it the app looks
+exactly like one whose data has been wiped, and every balance behind it is a
+lie. Fire-and-forget writes are caught through an `unhandledrejection` listener,
+since most mutations are not awaited.
+
+`e2e/resilience.spec.ts` covers both, and was checked to fail when either is
+removed.
+
 ## Backing up
 
 There is no server, so **clearing your browser data deletes everything.** Use

@@ -1,10 +1,12 @@
-import { NavLink, Outlet } from 'react-router'
+import { NavLink, Outlet, useLocation } from 'react-router'
 import { Moon, Sun } from 'lucide-react'
 import { NAV_ITEMS } from './nav'
 import { cn } from '../../lib/cn'
 import { useUI } from '../../store/ui'
 import { IconButton } from '../ui/Primitives'
 import { DataMenu } from './DataMenu'
+import { StorageBanner } from './StorageBanner'
+import { ErrorBoundary } from '../ErrorBoundary'
 import { useSettings } from '../../hooks/useData'
 
 function Logo() {
@@ -32,6 +34,7 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
 export function AppShell() {
   const { theme, toggleTheme } = useUI()
   const settings = useSettings()
+  const { pathname } = useLocation()
 
   return (
     <div className="flex min-h-dvh bg-bg">
@@ -74,8 +77,16 @@ export function AppShell() {
           </IconButton>
         </header>
 
+        <StorageBanner />
+
         <main className="min-w-0 flex-1 px-3 pt-4 pb-24 sm:px-5 lg:pb-8">
-          <Outlet />
+          {/* Scoped to the page, so a broken screen can be navigated away
+              from -- and keyed by route, because a boundary does not reset
+              itself, and without this one broken screen would hold every
+              other screen hostage. */}
+          <ErrorBoundary key={pathname} variant="page">
+            <Outlet />
+          </ErrorBoundary>
         </main>
 
         <nav

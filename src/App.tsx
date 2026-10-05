@@ -11,25 +11,28 @@ import { Categories } from './pages/Categories'
 import { SplitBill } from './pages/SplitBill'
 import { NotFound } from './pages/NotFound'
 import { Welcome } from './components/layout/Welcome'
+import { ErrorBoundary } from './components/ErrorBoundary'
 
 export default function App() {
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
-      <Routes>
-        <Route element={<AppShell />}>
-          <Route index element={<Dashboard />} />
-          <Route path="transactions" element={<Transactions />} />
-          <Route path="analytics" element={<Analytics />} />
-          <Route path="budget" element={<Budget />} />
-          <Route path="reports" element={<Reports />} />
-          <Route path="accounts" element={<Accounts />} />
-          <Route path="categories" element={<Categories />} />
-          <Route path="split-bill" element={<SplitBill />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-      <Welcome />
-      <Toaster />
-    </BrowserRouter>
+    <ErrorBoundary variant="app">
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <Routes>
+          <Route element={<AppShell />}>
+            <Route index element={<Dashboard />} />
+            <Route path="transactions" element={<Transactions />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="budget" element={<Budget />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="accounts" element={<Accounts />} />
+            <Route path="categories" element={<Categories />} />
+            <Route path="split-bill" element={<SplitBill />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
+        </Routes>
+        <Welcome />
+        <Toaster />
+      </BrowserRouter>
+    </ErrorBoundary>
   )
 }
